@@ -1,0 +1,25 @@
+ALTER PROCEDURE [ws].[callws]
+AS
+BEGIN
+		DECLARE @object AS INT
+    DECLARE @responseText AS VARCHAR(8000)
+		DECLARE @methodName VARCHAR(50) = 'GET'
+		DECLARE @status INT;
+		DECLARE @URI VARCHAR(2000) = 'http://localhost:8080/MAIL/ws/mail/sender'
+		DECLARE @requestBody NVARCHAR(MAX) = '{
+			"WavName": "{WavName}",
+			"Dnis": "{Dnis}"
+		}'
+
+    EXEC sp_OACreate 'WinHttp.WinHttpRequest.5.1', @object OUT
+		EXEC sp_OAMethod @object, 'open', NULL, @methodName,  @URI, 'false'
+		Exec sp_OAMethod @Object, 'send'
+		EXEC sp_OAMethod @object, 'responseText', @responseText OUTPUT
+		SELECT @responseText
+		--EXEC sp_OAMethod @object, 'setRequestHeader', null, 'Content-Type', 'application/json'
+		--DECLARE @len INT = len(@requestBody) 
+		--EXEC sp_OAMethod @object, 'setRequestHeader', null, 'Content-Length', @len
+		--EXEC sp_OAMethod @object, 'send', null, @requestBody
+		--EXEC sp_OAGetProperty @object, 'Status', @status OUT
+		EXEC sp_OADestroy @object
+END
